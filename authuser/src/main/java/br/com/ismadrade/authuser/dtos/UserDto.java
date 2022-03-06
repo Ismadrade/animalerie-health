@@ -4,8 +4,7 @@ import br.com.ismadrade.authuser.validations.UsernameConstraint;
 import br.com.ismadrade.authuser.views.UserView;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -14,12 +13,15 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDto {
 
     private UUID userId;
 
-    @NotBlank(groups = UserView.RegistrationPost.class)
+
     @Size(min = 4, max = 50, groups = UserView.RegistrationPost.class)
     @JsonView(UserView.RegistrationPost.class)
     @UsernameConstraint(groups = UserView.RegistrationPost.class)
