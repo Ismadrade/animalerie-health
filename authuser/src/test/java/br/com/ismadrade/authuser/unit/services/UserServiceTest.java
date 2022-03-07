@@ -15,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,6 +44,17 @@ public class UserServiceTest {
         assertThat(userSaved.getUsername()).isEqualTo("Ismadrade");
         assertThat(userSaved.getFullName()).isEqualTo("Ismael Andrade");
         assertThat(userSaved.getEmail()).isEqualTo("ismadrade@gmail.com");
+    }
+
+    @Test
+    @DisplayName("Test find an user by id")
+    public void findAnUserById(){
+        Mockito.when(userRepository.findById(Mockito.any())).thenReturn(Optional.of(buildUser(true)));
+        Optional<UserModel> userModelOptional = userService.findById(UUID.fromString("9bbc8b99-7057-475b-81ca-6130e15bf030"));
+        assertThat(userModelOptional).isNotEmpty();
+        assertThat(userModelOptional.get().getUsername()).isEqualTo("Ismadrade");
+        assertThat(userModelOptional.get().getFullName()).isEqualTo("Ismael Andrade");
+        assertThat(userModelOptional.get().getEmail()).isEqualTo("ismadrade@gmail.com");
     }
 
 

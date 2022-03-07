@@ -6,6 +6,9 @@ import br.com.ismadrade.authuser.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -29,6 +32,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean existsByCpf(String cpf) {
         return userRepository.existsByCpf(cpf);
+    }
+
+    @Override
+    public Optional<UserModel> findById(UUID userId) {
+        return userRepository.findById(userId);
     }
 
 
