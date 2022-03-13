@@ -28,9 +28,11 @@ public class UserModel extends RepresentationModel<UserModel> implements Seriali
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Type(type="uuid-char")
+    @Column(columnDefinition = "uuid")
+    //@Type(type="uuid-char")
+    //@Type(type = "org.hibernate.type.UUIDCharType")
     private UUID userId;
-    @Column(nullable = false, unique = true, length = 50)
+    @Column( nullable = false, unique = true, length = 50)
     private String username;
     @Column(nullable = false, unique = true, length = 50)
     private String email;

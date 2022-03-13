@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -47,9 +48,19 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll(spec, pageable);
     }
 
+    @Override
+    public UserModel updatePassword(UserModel userModel) {
+        return userRepository.save(userModel);
+    }
 
     @Override
     public UserModel saveUser(UserModel userModel) {
         return this.userRepository.save(userModel);
+    }
+
+    @Transactional
+    @Override
+    public void delete(UserModel userModel) {
+        userRepository.delete(userModel);
     }
 }
