@@ -3,10 +3,17 @@ package br.com.ismadrade.authuser.controllers;
 import br.com.ismadrade.authuser.exceptions.CustomException;
 import br.com.ismadrade.authuser.models.UserModel;
 import br.com.ismadrade.authuser.services.UserService;
+import br.com.ismadrade.authuser.specifications.SpecificationTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -33,5 +40,18 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.OK).body(userModelOptional);
         }
 
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<UserModel>> getAllUsers(SpecificationTemplate.UserSpec spec,
+                                                       @PageableDefault(page = 0, size = 10, sort = "userId", direction = Sort.Direction.ASC) Pageable pageable){
+
+        Page<UserModel> userModelPage = userService.findAll(spec, pageable);
+        if(!userModelPage.isEmpty()){
+            userModelPage.forEach(user -> {
+                user.add(linkTo(methodOn(UserController.class).getOneUser(user.getUserId())).withSelfRel());
+            });
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(userModelPage);
     }
 }
