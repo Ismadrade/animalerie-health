@@ -7,8 +7,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -22,7 +24,7 @@ import java.util.stream.Stream;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserModel {
+public class UserModel extends RepresentationModel<UserModel> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

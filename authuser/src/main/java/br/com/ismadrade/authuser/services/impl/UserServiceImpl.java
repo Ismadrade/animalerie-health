@@ -4,6 +4,9 @@ import br.com.ismadrade.authuser.models.UserModel;
 import br.com.ismadrade.authuser.repositories.UserRepository;
 import br.com.ismadrade.authuser.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -37,6 +40,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<UserModel> findById(UUID userId) {
         return userRepository.findById(userId);
+    }
+
+    @Override
+    public Page<UserModel> findAll(Specification<UserModel> spec, Pageable pageable) {
+        return userRepository.findAll(spec, pageable);
     }
 
 
