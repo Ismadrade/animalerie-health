@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UserService {
+
     UserModel saveUser(UserModel userModel);
 
     boolean existsByUsername(String username);
@@ -20,4 +21,8 @@ public interface UserService {
     Optional<UserModel> findById(UUID userId);
 
     Page<UserModel> findAll(Specification<UserModel> spec, Pageable pageable);
+
+    UserModel updatePassword(UserModel userModel);
+
+    void delete(UserModel userModel);
 }
