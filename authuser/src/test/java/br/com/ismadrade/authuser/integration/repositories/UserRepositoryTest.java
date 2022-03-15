@@ -42,7 +42,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    @DisplayName("Save an user.")
+    @DisplayName("Save a user.")
     void saveAnUser(){
         UserModel user = UserModel.builder()
                 .username("Ismadrade")
@@ -55,7 +55,6 @@ public class UserRepositoryTest {
                 .lastUpdateDate(LocalDateTime.now())
                 .phoneNumber("48998765432")
                 .build();
-
         UserModel userSaved = userRepository.save(user);
         assertNotNull(userSaved);
         assertNotNull(userSaved.getUserId());
@@ -63,23 +62,36 @@ public class UserRepositoryTest {
     }
 
     @Test
-    @DisplayName("Find an user by id.")
-    void findAnUserById(){
-
+    @DisplayName("Edit an existent user.")
+    void editAnExistentUser(){
         Optional<UserModel> userOptional = userRepository.findById(UUID.fromString("9bbc8b99-7057-475b-81ca-6130e15bf030"));
-        assertThat(userOptional).isNotEmpty();
-        assertEquals(userOptional.get().getEmail(), "rafys2000@gmail.com");
-
+        UserModel user = userOptional.get();
+        String lastCpf = user.getCpf();
+        String lastEmail = user.getEmail();
+        user.setCpf("025.969.969-88");
+        user.setEmail("teste@teste.com.br");
+        UserModel userEdited = userRepository.save(user);
+        assertNotNull(userEdited);
+        assertThat(userEdited.getEmail()).isNotEqualTo(lastEmail);
+        assertThat(userEdited.getCpf()).isNotEqualTo(lastCpf);
     }
 
     @Test
-    @DisplayName("Find all user")
+    @DisplayName("Find a user by id.")
+    void findAnUserById(){
+        Optional<UserModel> userOptional = userRepository.findById(UUID.fromString("9bbc8b99-7057-475b-81ca-6130e15bf030"));
+        assertThat(userOptional).isNotEmpty();
+        assertEquals(userOptional.get().getEmail(), "rafys2000@gmail.com");
+    }
+
+    @Test
+    @DisplayName("Find all user with page 0 and size 2")
     void findAllUser(){
-        Pageable pageable = PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC,"userId"));
+        Pageable pageable = PageRequest.of(0, 2, Sort.by(Sort.Direction.ASC,"userId"));
         Specification spec =  (root, query, cb) ->  null;
         Page result = userRepository.findAll(spec, pageable);
         assertThat(result).isNotEmpty();
-        assertThat(result).hasSize(4);
+        assertThat(result).hasSize(2);
     }
 
     @Test
@@ -96,5 +108,15 @@ public class UserRepositoryTest {
         assertThat(result).hasSize(1);
         assertEquals(result.getContent().get(0).getUserId(), UUID.fromString("d1ce0dbe-1cdc-4305-8798-3a3fa29f950f"));
         assertEquals(result.getContent().get(0).getUserStatus(), UserStatus.BLOCKED);
+    }
+
+    @Test
+    @DisplayName("Delete a user by id")
+    void deleteUserById(){
+        Optional<UserModel> userOptional = userRepository.findById(UUID.fromString("9bbc8b99-7057-475b-81ca-6130e15bf030"));
+        UserModel user = userOptional.get();
+        userRepository.delete(user);
+        Optional<UserModel> userDeleted = userRepository.findById(UUID.fromString("9bbc8b99-7057-475b-81ca-6130e15bf030"));
+        assertThat(userDeleted).isEmpty();
     }
 }

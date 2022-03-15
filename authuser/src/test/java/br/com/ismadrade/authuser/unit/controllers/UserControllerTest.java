@@ -50,14 +50,14 @@ public class UserControllerTest {
     }
 
     @Test
-    @DisplayName("Find an user by id.")
-    void createUserTest() throws Exception {
+    @DisplayName("Find a user by id.")
+    void findUserTest() throws Exception {
         UserModel userSaved = buildUser();
         BDDMockito.given(userService.findById(Mockito.any(UUID.class))).willReturn(Optional.of(userSaved));
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .get("/users/9bbc8b99-7057-475b-81ca-6130e15bf030")
                 .accept(MediaType.APPLICATION_JSON);
-        String contentAsString = mockMvc.perform(request).andReturn().getResponse().getContentAsString();
+//        String contentAsString = mockMvc.perform(request).andReturn().getResponse().getContentAsString();
         mockMvc
                 .perform(request)
                 .andExpect(status().isOk())
@@ -76,22 +76,36 @@ public class UserControllerTest {
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .get("/users/9bbc8b99-7057-475b-81ca-6130e15bf030")
                 .accept(MediaType.APPLICATION_JSON);
-        String contentAsString = mockMvc.perform(request).andReturn().getResponse().getContentAsString();
+//        String contentAsString = mockMvc.perform(request).andReturn().getResponse().getContentAsString();
         mockMvc
                 .perform(request)
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message").value("Usuario não encontrado"));
     }
 
+    @Test
+    @DisplayName("Throw error by giving a wrong old password.")
+    void throwErrorByGivingWrongOldPasswordTest() throws Exception {
+        UserDto userDto = buildUserDtoToUpdatePassword();
+        String json = new ObjectMapper().writeValueAsString(userDto);
+        BDDMockito.given(userService.findById(Mockito.any(UUID.class))).willReturn(Optional.of(buildUser()));
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .put("/users/9bbc8b99-7057-475b-81ca-6130e15bf030/password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(json);
+//        String contentAsString = mockMvc.perform(request).andReturn().getResponse().getContentAsString();
+        mockMvc
+                .perform(request)
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("message").value("Senha antiga é incompatível!"));
+    }
 
-    private UserDto buildUserDto(){
+
+    private UserDto buildUserDtoToUpdatePassword(){
         return UserDto.builder()
-                .username("Ismadrade")
-                .email("ismadrade@gmail.com")
-                .cpf("09663221447")
-                .fullName("Ismael Andrade")
-                .password("123456")
-                .phoneNumber("48998765432")
+                .password("123456789")
+                .oldPassword("1234")
                 .build();
     }
 
