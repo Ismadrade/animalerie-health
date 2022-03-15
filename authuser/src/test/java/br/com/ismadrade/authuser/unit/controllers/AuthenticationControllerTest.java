@@ -47,7 +47,7 @@ public class AuthenticationControllerTest {
     }
 
     @Test
-    @DisplayName("Create an user")
+    @DisplayName("Create a user")
     void createUserTest() throws Exception {
         UserDto userDto = buildUserDto();
         UserModel userSaved = buildUser();
