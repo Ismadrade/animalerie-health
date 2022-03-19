@@ -1,8 +1,11 @@
 package br.com.ismadrade.authuser.unit.services;
 
 
+import br.com.ismadrade.authuser.dtos.UserEventDto;
+import br.com.ismadrade.authuser.enums.ActionType;
 import br.com.ismadrade.authuser.enums.UserStatus;
 import br.com.ismadrade.authuser.models.UserModel;
+import br.com.ismadrade.authuser.publishers.UserEventPublisher;
 import br.com.ismadrade.authuser.repositories.UserRepository;
 import br.com.ismadrade.authuser.services.UserService;
 import br.com.ismadrade.authuser.services.impl.UserServiceImpl;
@@ -29,15 +32,20 @@ public class UserServiceTest {
     @MockBean
     private UserRepository userRepository;
 
+    @MockBean
+    private UserEventPublisher userEventPublisher;
+
+
     @BeforeEach
     void setup(){
-        this.userService = new UserServiceImpl(userRepository);
+        this.userService = new UserServiceImpl(userRepository, userEventPublisher);
     }
 
     @Test
     @DisplayName("Test save an user")
     public void saveAnUser(){
         UserModel user = buildUser(false);
+        Mockito.doNothing().when(userEventPublisher).publishUserEvent(Mockito.any(UserEventDto.class), Mockito.any(ActionType.class) );
         Mockito.when(userRepository.save(user)).thenReturn(buildUser(true));
         UserModel userSaved = userService.saveUser(user);
         assertThat(userSaved.getUserId()).isNotNull();

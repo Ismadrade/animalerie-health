@@ -1,5 +1,6 @@
 package br.com.ismadrade.authuser.models;
 
+import br.com.ismadrade.authuser.dtos.UserEventDto;
 import br.com.ismadrade.authuser.enums.UserStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -7,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
+import org.springframework.beans.BeanUtils;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
@@ -67,5 +69,12 @@ public class UserModel extends RepresentationModel<UserModel> implements Seriali
 
     public void setUsername(String username) {
         this.username = username.toLowerCase();
+    }
+
+    public UserEventDto convertToUserEventDto(){
+        var userEventDto = new UserEventDto();
+        BeanUtils.copyProperties(this, userEventDto);
+        userEventDto.setUserStatus(this.getUserStatus().toString());
+        return userEventDto;
     }
 }

@@ -19,3 +19,11 @@ spring:
       properties:
         hibernate:
           show_sql: true
+  rabbitmq:
+    addresses: amqps://btcvxrje:pq5onHw1132SDIANiEeHSnEBsiuGqS_w@chimpanzee.rmq.cloudamqp.com/btcvxrje
+animalerie-health:
+  broker:
+    exchange:
+      userEvent: ah.userevent
+
+

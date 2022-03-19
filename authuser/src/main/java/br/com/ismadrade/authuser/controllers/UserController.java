@@ -69,7 +69,7 @@ public class UserController {
         userModel.setPhoneNumber(userDto.getPhoneNumber());
         userModel.setCpf(userDto.getCpf());
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
-        userService.saveUser(userModel);
+        userService.updateUser(userModel);
         log.debug("PUT updateUser userId saved {}", userModel.getUserId());
         log.info("User updated successfully userId {}", userModel.getUserId());
         return ResponseEntity.status(HttpStatus.OK).body(userModel);
