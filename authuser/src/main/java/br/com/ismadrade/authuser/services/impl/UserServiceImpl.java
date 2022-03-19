@@ -1,6 +1,8 @@
 package br.com.ismadrade.authuser.services.impl;
 
+import br.com.ismadrade.authuser.enums.ActionType;
 import br.com.ismadrade.authuser.models.UserModel;
+import br.com.ismadrade.authuser.publishers.UserEventPublisher;
 import br.com.ismadrade.authuser.repositories.UserRepository;
 import br.com.ismadrade.authuser.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +19,12 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     final UserRepository userRepository;
+    final UserEventPublisher userEventPublisher;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, UserEventPublisher userEventPublisher) {
         this.userRepository = userRepository;
+        this.userEventPublisher = userEventPublisher;
     }
 
     @Override
@@ -55,12 +59,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserModel saveUser(UserModel userModel) {
-        return this.userRepository.save(userModel);
+        userModel = this.userRepository.save(userModel);
+        userEventPublisher.publishUserEvent(userModel.convertToUserEventDto(), ActionType.CREATE);
+        return userModel;
+    }
+
+    @Override
+    public UserModel updateUser(UserModel userModel) {
+        userModel = this.userRepository.save(userModel);
+        userEventPublisher.publishUserEvent(userModel.convertToUserEventDto(), ActionType.UPDATE);
+        return userModel;
     }
 
     @Transactional
     @Override
     public void delete(UserModel userModel) {
         userRepository.delete(userModel);
+        userEventPublisher.publishUserEvent(userModel.convertToUserEventDto(), ActionType.DELETE);
     }
 }

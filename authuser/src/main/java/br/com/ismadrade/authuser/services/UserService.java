@@ -12,6 +12,8 @@ public interface UserService {
 
     UserModel saveUser(UserModel userModel);
 
+    UserModel updateUser(UserModel userModel);
+
     boolean existsByUsername(String username);
 
     boolean existsByEmail(String email);
