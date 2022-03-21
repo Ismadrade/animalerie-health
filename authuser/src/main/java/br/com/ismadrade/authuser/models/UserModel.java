@@ -2,6 +2,7 @@ package br.com.ismadrade.authuser.models;
 
 import br.com.ismadrade.authuser.dtos.UserEventDto;
 import br.com.ismadrade.authuser.enums.UserStatus;
+import br.com.ismadrade.authuser.enums.UserType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -50,6 +51,9 @@ public class UserModel extends RepresentationModel<UserModel> implements Seriali
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
     @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private LocalDateTime creationDate;
