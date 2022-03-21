@@ -2,6 +2,7 @@ package br.com.ismadrade.authuser.controllers;
 
 import br.com.ismadrade.authuser.dtos.UserDto;
 import br.com.ismadrade.authuser.enums.UserStatus;
+import br.com.ismadrade.authuser.enums.UserType;
 import br.com.ismadrade.authuser.exceptions.CustomException;
 import br.com.ismadrade.authuser.models.UserModel;
 import br.com.ismadrade.authuser.services.UserService;
@@ -58,6 +59,7 @@ public class AuthenticationController {
         userModel.setUserStatus(UserStatus.ACTIVE);
         userModel.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
+        userModel.setUserType(UserType.USER);
         userService.saveUser(userModel);
         log.debug("POST registerUser userId {}", userModel.getUserId());
         log.info("Usuario salvo com sucesso! userId {}", userModel.getUserId());
