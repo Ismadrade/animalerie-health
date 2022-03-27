@@ -1,0 +1,27 @@
+server:
+  port: 8084
+  servlet:
+    context-path: '/ead-pet/'
+
+spring:
+  application:
+    name: ah-pet-management-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ah-pet
+    username: postgres
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      jdbc:
+        lob.non-contextual-creation: true
+      properties:
+        hibernate:
+          show_sql: true
+  rabbitmq:
+    addresses: amqps://btcvxrje:pq5onHw1132SDIANiEeHSnEBsiuGqS_w@chimpanzee.rmq.cloudamqp.com/btcvxrje
+animalerie-health:
+  broker:
+    exchange:
+      userEvent: ah.userevent
