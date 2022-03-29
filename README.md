@@ -16,7 +16,7 @@ Api of a veterinary clinic system
 # Initial Structure:
 
 - authuser: Manage users, authentication jwt token, role sessions.
-- pet register: initial registers for pets.
+- pet management: initial registers for pets, types and vaccines.
 - notification: notification central to inform the user about a pet exam or a creation of a pet, etc. 
 - service registry: Microservice registration
 - api gateway: Microservice Manager.
