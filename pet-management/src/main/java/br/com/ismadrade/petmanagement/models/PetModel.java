@@ -1,5 +1,7 @@
 package br.com.ismadrade.petmanagement.models;
 
+import br.com.ismadrade.petmanagement.enums.PetGender;
+import br.com.ismadrade.petmanagement.enums.UserType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -33,6 +35,10 @@ public class PetModel implements Serializable {
     @Column(name = "birthday")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate birthday;
+
+    @Column(nullable = false, name = "gender")
+    @Enumerated(EnumType.STRING)
+    private PetGender gender;
 
     @Column(nullable = false, length = 20)
     private String rga;
