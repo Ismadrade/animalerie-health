@@ -6,6 +6,10 @@ import br.com.ismadrade.petmanagement.models.UserModel;
 import br.com.ismadrade.petmanagement.views.PetView;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import lombok.*;
 
 import javax.validation.constraints.Size;
@@ -27,6 +31,8 @@ public class PetDto {
 
     @JsonView(PetView.RegistrationPost.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate birthday;
 
     @JsonView(PetView.RegistrationPost.class)
