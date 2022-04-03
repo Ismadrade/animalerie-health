@@ -36,20 +36,13 @@ public class UserModel extends RepresentationModel<UserModel> implements Seriali
     @Column(length = 20)
     private String cpf;
 
+    @Column(length = 20)
+    private String phoneNumber;
+
     @Column(nullable = false, name = "status")
-    @Enumerated(EnumType.STRING)
-    private UserStatus userStatus;
+    private String userStatus;
 
     @Column(nullable = false, name = "type")
-    @Enumerated(EnumType.STRING)
-    private UserType userType;
-
-    @Column(nullable = false, name = "creation_date")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
-    private LocalDateTime creationDate;
-
-    @Column(nullable = false, name = "last_update_date")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
-    private LocalDateTime lastUpdateDate;
+    private String userType;
 
 }

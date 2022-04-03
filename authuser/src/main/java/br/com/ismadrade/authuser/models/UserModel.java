@@ -51,7 +51,7 @@ public class UserModel extends RepresentationModel<UserModel> implements Seriali
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
-    @Column(nullable = false)
+    @Column(nullable = false, name = "user_type")
     @Enumerated(EnumType.STRING)
     private UserType userType;
     @Column(nullable = false)
@@ -79,6 +79,7 @@ public class UserModel extends RepresentationModel<UserModel> implements Seriali
         var userEventDto = new UserEventDto();
         BeanUtils.copyProperties(this, userEventDto);
         userEventDto.setUserStatus(this.getUserStatus().toString());
+        userEventDto.setUserType(this.getUserType().toString());
         return userEventDto;
     }
 }
