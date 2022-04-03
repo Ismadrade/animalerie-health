@@ -1,7 +1,9 @@
-package br.com.ismadrade.authuser.dtos;
+package br.com.ismadrade.petmanagement.dtos;
 
+import br.com.ismadrade.petmanagement.models.UserModel;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.BeanUtils;
 
 import java.util.UUID;
 
@@ -17,4 +19,10 @@ public class UserEventDto {
     private String phoneNumber;
     private String cpf;
     private String actionType;
+
+    public UserModel convertToUserModel(){
+        var userModel = new UserModel();
+        BeanUtils.copyProperties(this, userModel);
+        return userModel;
+    }
 }

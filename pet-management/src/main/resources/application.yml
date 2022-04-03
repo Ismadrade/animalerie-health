@@ -24,4 +24,7 @@ spring:
 animalerie-health:
   broker:
     exchange:
-      userEvent: ah.userevent
+      userEventExchange: ah.userevent
+    queue:
+      userEventQueue:
+        name: ead.userevent.ms.pet

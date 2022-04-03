@@ -119,10 +119,8 @@ public class PetControllerTest {
                 .fullName("Ismael da Silva de Andrade")
                 .cpf("01478796547")
                 .email("user@user.com")
-                .userStatus(UserStatus.ACTIVE)
-                .userType(UserType.USER)
-                .creationDate(LocalDateTime.now())
-                .lastUpdateDate(LocalDateTime.now())
+                .userStatus(UserStatus.ACTIVE.toString())
+                .userType(UserType.USER.toString())
                 .build();
 
         PetModel pet = PetModel
