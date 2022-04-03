@@ -8,4 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface PetRepository extends JpaRepository<PetModel, UUID> {
+    Boolean findByRga(String rga);
 }

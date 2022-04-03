@@ -1,6 +1,7 @@
 package br.com.ismadrade.petmanagement.controllers;
 
 import br.com.ismadrade.petmanagement.dtos.PetDto;
+import br.com.ismadrade.petmanagement.exceptions.CustomException;
 import br.com.ismadrade.petmanagement.models.PetModel;
 import br.com.ismadrade.petmanagement.services.PetService;
 import br.com.ismadrade.petmanagement.views.PetView;
@@ -34,6 +35,11 @@ public class PetController {
                                          @JsonView(PetView.RegistrationPost.class)
                                          @Validated(PetView.RegistrationPost.class) PetDto petDto){
         log.debug("POST petRegister petDto received {}", petDto.toString());
+
+        if(petService.existRga(petDto.getRga())){
+            log.warn("Pet já cadastrado para o RGA informado {} ", petDto.getRga());
+            throw new CustomException(HttpStatus.CONFLICT, "Pet já cadastrado para o RGA informado!");
+        }
 
         var petModel = new PetModel();
         BeanUtils.copyProperties(petDto, petModel);

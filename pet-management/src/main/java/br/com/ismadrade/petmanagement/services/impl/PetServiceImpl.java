@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class PetServiceImpl implements PetService {
 
-    private PetRepository petRepository;
+    private final PetRepository petRepository;
 
     @Autowired
     public PetServiceImpl(PetRepository petRepository) {
@@ -20,5 +20,10 @@ public class PetServiceImpl implements PetService {
     @Override
     public PetModel savePet(PetModel petModel) {
         return petRepository.save(petModel);
+    }
+
+    @Override
+    public Boolean existRga(String rga) {
+        return petRepository.findByRga(rga);
     }
 }

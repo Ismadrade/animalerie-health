@@ -72,6 +72,24 @@ public class PetControllerTest {
 
     }
 
+    @Test
+    @DisplayName("Throw error when registering an pet with same rga")
+    void throwErrorSamePetRga() throws Exception {
+        PetDto petDto = buildPetDto();
+        BDDMockito.given(petService.existRga(Mockito.anyString())).willReturn(true);
+        String json = new ObjectMapper().writeValueAsString(petDto);
+        String mensagemErro = "Pet já cadastrado para o RGA informado!";
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post("/pets")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(json);
+        mockMvc.perform(request)
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("message").value(mensagemErro))
+                .andExpect(jsonPath("httpStatus").value("CONFLICT"));
+    }
+
     private PetDto buildPetDto() {
         return PetDto
                 .builder()
