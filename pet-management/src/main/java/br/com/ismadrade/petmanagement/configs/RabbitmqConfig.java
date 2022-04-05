@@ -3,6 +3,8 @@ package br.com.ismadrade.petmanagement.configs;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -16,9 +18,6 @@ public class RabbitmqConfig {
 
     @Autowired
     CachingConnectionFactory cachingConnectionFactory;
-
-    @Value(value = "${animalerie-health.broker.exchange.userEventExchange}")
-    private String exchangeUserEvent;
 
     @Bean
     public RabbitTemplate rabbitTemplate(){
@@ -34,8 +33,4 @@ public class RabbitmqConfig {
         return new Jackson2JsonMessageConverter(objectMapper);
     }
 
-    @Bean
-    public FanoutExchange fanoutUserEvent(){
-        return new FanoutExchange(exchangeUserEvent);
-    }
 }
