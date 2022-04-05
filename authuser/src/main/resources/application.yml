@@ -21,9 +21,22 @@ spring:
           show_sql: true
   rabbitmq:
     addresses: amqps://btcvxrje:pq5onHw1132SDIANiEeHSnEBsiuGqS_w@chimpanzee.rmq.cloudamqp.com/btcvxrje
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 1s
+          max-attempts: 2
+          max-interval: 2s
+          multiplier: 2
+        default-requeue-rejected: false
 animalerie-health:
   broker:
     exchange:
       userEvent: ah.userevent
+      deadLetter: deadLetterExchange
+    queue:
+      deadLetter:
+        name: deadLetter.queue
 
 

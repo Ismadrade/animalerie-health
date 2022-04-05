@@ -2,7 +2,7 @@ package br.com.ismadrade.authuser.configs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -19,6 +19,12 @@ public class RabbitmqConfig {
 
     @Value(value = "${animalerie-health.broker.exchange.userEvent}")
     private String exchangeUserEvent;
+
+    @Value(value = "${animalerie-health.broker.exchange.deadLetter}")
+    private String exchangeDeadLetter;
+
+    @Value(value = "${animalerie-health.broker.queue.deadLetter.name}")
+    private String queueDeadLetter;
 
     @Bean
     public RabbitTemplate rabbitTemplate(){
@@ -38,4 +44,20 @@ public class RabbitmqConfig {
     public FanoutExchange fanoutUserEvent(){
         return new FanoutExchange(exchangeUserEvent);
     }
+
+    @Bean
+    FanoutExchange deadLetterExchange() {
+        return new FanoutExchange(exchangeDeadLetter);
+    }
+
+    @Bean
+    Queue dlq() {
+        return QueueBuilder.durable(queueDeadLetter).build();
+    }
+
+    @Bean
+    Binding DLQbinding() {
+        return BindingBuilder.bind(dlq()).to(deadLetterExchange());
+    }
+
 }
