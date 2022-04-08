@@ -61,11 +61,5 @@ public class PetModel implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private LocalDateTime lastUpdateDate;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "pet", fetch = FetchType.LAZY)
-    private Set<PetVaccineModel> petVaccines;
-
-
-
 
 }
