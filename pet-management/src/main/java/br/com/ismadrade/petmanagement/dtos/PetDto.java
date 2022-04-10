@@ -26,26 +26,27 @@ public class PetDto {
     private UUID petId;
 
     @Size(min = 2, max = 50, groups = PetView.RegistrationPost.class)
-    @JsonView(PetView.RegistrationPost.class)
+    @JsonView({PetView.RegistrationPost.class, PetView.RegistrationPut.class})
     private String name;
 
-    @JsonView(PetView.RegistrationPost.class)
+    @JsonView({PetView.RegistrationPost.class, PetView.RegistrationPut.class})
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate birthday;
 
-    @JsonView(PetView.RegistrationPost.class)
+    @JsonView({PetView.RegistrationPost.class, PetView.RegistrationPut.class})
     private PetGender gender;
 
     @Size(max = 20, groups = PetView.RegistrationPost.class)
     @JsonView(PetView.RegistrationPost.class)
     private String rga;
 
-    @JsonView(PetView.RegistrationPost.class)
+    @JsonView({PetView.RegistrationPost.class, PetView.RegistrationPut.class})
     private UUID type;
 
-    @JsonView(PetView.RegistrationPost.class)
+    /**TODO:  Ajustar user para o contexto do Spring Security quando implementado.  */
+    @JsonView({PetView.RegistrationPost.class, PetView.RegistrationPut.class})
     private UUID user;
 
 

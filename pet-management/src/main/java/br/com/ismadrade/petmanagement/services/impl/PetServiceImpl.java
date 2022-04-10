@@ -6,6 +6,9 @@ import br.com.ismadrade.petmanagement.services.PetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Service
 public class PetServiceImpl implements PetService {
 
@@ -24,6 +27,11 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public Boolean existRga(String rga) {
-        return petRepository.findByRga(rga);
+        return petRepository.existsByRga(rga);
+    }
+
+    @Override
+    public Optional<PetModel> findById(UUID petId) {
+        return petRepository.findById(petId);
     }
 }
