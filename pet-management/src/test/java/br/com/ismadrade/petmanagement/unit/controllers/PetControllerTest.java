@@ -8,6 +8,8 @@ import br.com.ismadrade.petmanagement.models.PetModel;
 import br.com.ismadrade.petmanagement.models.TypeModel;
 import br.com.ismadrade.petmanagement.models.UserModel;
 import br.com.ismadrade.petmanagement.services.PetService;
+import br.com.ismadrade.petmanagement.services.TypeService;
+import br.com.ismadrade.petmanagement.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @WebAppConfiguration
@@ -46,6 +49,12 @@ public class PetControllerTest {
     @MockBean
     private PetService petService;
 
+    @MockBean
+    private UserService userService;
+
+    @MockBean
+    private TypeService typeService;
+
     @BeforeEach
     private void setup(){
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
@@ -57,6 +66,8 @@ public class PetControllerTest {
         PetDto petDto = buildPetDto();
         PetModel petSaved = buildPet(true);
         BDDMockito.given(petService.savePet(Mockito.any(PetModel.class))).willReturn(petSaved);
+        BDDMockito.given(userService.findById(Mockito.any(UUID.class))).willReturn(Optional.of(buildUser()));
+        BDDMockito.given(typeService.findById(Mockito.any(UUID.class))).willReturn(Optional.of(buildType()));
         String json = new ObjectMapper().writeValueAsString(petDto);
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
@@ -73,21 +84,69 @@ public class PetControllerTest {
     }
 
     @Test
-    @DisplayName("Throw error when registering an pet with same rga")
-    void throwErrorSamePetRga() throws Exception {
+    @DisplayName("Throw error by creating a pet existing rga")
+    void throwErrorByCreatingPetExistingRga() throws Exception{
         PetDto petDto = buildPetDto();
         BDDMockito.given(petService.existRga(Mockito.anyString())).willReturn(true);
         String json = new ObjectMapper().writeValueAsString(petDto);
-        String mensagemErro = "Pet já cadastrado para o RGA informado!";
+        final String message = "Pet já cadastrado para o RGA informado!";
+
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .post("/pets")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(json);
+
         mockMvc.perform(request)
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("message").value(mensagemErro))
-                .andExpect(jsonPath("httpStatus").value("CONFLICT"));
+                .andExpect(jsonPath("message").value(message));
+
+    }
+
+    @Test
+    @DisplayName("Find a pet by id")
+    void findPetById() throws Exception{
+        String petId = "d7aef0c7-d4d9-4ea5-a8e1-2b53253e8c79";
+        BDDMockito.given(petService.findById(Mockito.any(UUID.class))).willReturn(Optional.of(buildPet(true)));
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get("/pets/" + petId);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("name").value("Laika"))
+                .andExpect(jsonPath("gender").value(PetGender.FEMALE.toString()));
+
+    }
+
+    @Test
+    @DisplayName("Edit a Pet")
+    void EditPet() throws Exception {
+        String petId = "d7aef0c7-d4d9-4ea5-a8e1-2b53253e8c79";
+        PetDto petDto = buildPetDto();
+        petDto.setName("Laika Edited");
+        petDto.setGender(PetGender.MALE);
+        PetModel petSaved = buildPet(true);
+        petSaved.setName(petDto.getName());
+        petSaved.setGender(petDto.getGender());
+
+        BDDMockito.given(petService.findById(Mockito.any(UUID.class))).willReturn(Optional.of(petSaved));
+        BDDMockito.given(userService.findById(Mockito.any(UUID.class))).willReturn(Optional.of(buildUser()));
+        BDDMockito.given(typeService.findById(Mockito.any(UUID.class))).willReturn(Optional.of(buildType()));
+        BDDMockito.given(petService.savePet(Mockito.any(PetModel.class))).willReturn(petSaved);
+        String json = new ObjectMapper().writeValueAsString(petDto);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .put("/pets/" + petId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(json);
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("name").value(petDto.getName()))
+                .andExpect(jsonPath("gender").value(petDto.getGender().toString()));
+
+
     }
 
     private PetDto buildPetDto() {
@@ -104,25 +163,6 @@ public class PetControllerTest {
 
     private PetModel buildPet(Boolean isSaved) {
 
-        TypeModel type = TypeModel.builder()
-                .name("Cachorro")
-                .breed("Husky")
-                .typeId(UUID.fromString("ede14557-e644-4af1-944e-d2a04f67b687"))
-                .observation("A happy Husky")
-                .creationDate(LocalDateTime.now())
-                .lastUpdateDate(LocalDateTime.now())
-                .build();
-
-        UserModel user = UserModel
-                .builder()
-                .userId(UUID.fromString("234dcce4-4944-44da-bc8f-6323c7c3495f"))
-                .fullName("Ismael da Silva de Andrade")
-                .cpf("01478796547")
-                .email("user@user.com")
-                .userStatus(UserStatus.ACTIVE.toString())
-                .userType(UserType.USER.toString())
-                .build();
-
         PetModel pet = PetModel
                 .builder()
                 .name("Laika")
@@ -131,13 +171,35 @@ public class PetControllerTest {
                 .gender(PetGender.FEMALE)
                 .lastUpdateDate(LocalDateTime.now())
                 .rga("123456789")
-                .user(user)
-                .type(type)
+                .user(buildUser())
+                .type(buildType())
                 .build();
 
         if(isSaved)
             pet.setPetId(UUID.fromString("d7aef0c7-d4d9-4ea5-a8e1-2b53253e8c79"));
         return pet;
+    }
+    private UserModel buildUser() {
+        return UserModel
+                .builder()
+                .userId(UUID.fromString("234dcce4-4944-44da-bc8f-6323c7c3495f"))
+                .fullName("Ismael da Silva de Andrade")
+                .cpf("01478796547")
+                .email("user@user.com")
+                .userStatus(UserStatus.ACTIVE.toString())
+                .userType(UserType.USER.toString())
+                .build();
+    }
+
+    private TypeModel buildType() {
+        return TypeModel.builder()
+                .name("Cachorro")
+                .breed("Husky")
+                .typeId(UUID.fromString("ede14557-e644-4af1-944e-d2a04f67b687"))
+                .observation("A happy Husky")
+                .creationDate(LocalDateTime.now())
+                .lastUpdateDate(LocalDateTime.now())
+                .build();
     }
 
 }

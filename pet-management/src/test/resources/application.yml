@@ -19,4 +19,10 @@ spring:
 animalerie-health:
   broker:
     exchange:
-      userEvent: ah.userevent
+      userEventExchange: ah.userevent
+      deadLetter: deadLetterExchange
+    queue:
+      userEventQueue:
+        name: ah.userevent.ms.pet
+      deadLetter:
+        name: deadLetter.queue
