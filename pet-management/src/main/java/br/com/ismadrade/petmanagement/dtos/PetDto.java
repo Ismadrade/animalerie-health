@@ -1,8 +1,6 @@
 package br.com.ismadrade.petmanagement.dtos;
 
 import br.com.ismadrade.petmanagement.enums.PetGender;
-import br.com.ismadrade.petmanagement.models.TypeModel;
-import br.com.ismadrade.petmanagement.models.UserModel;
 import br.com.ismadrade.petmanagement.views.PetView;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -43,11 +41,11 @@ public class PetDto {
     private String rga;
 
     @JsonView({PetView.RegistrationPost.class, PetView.RegistrationPut.class})
-    private UUID type;
+    private UUID typeId;
 
     /**TODO:  Ajustar user para o contexto do Spring Security quando implementado.  */
     @JsonView({PetView.RegistrationPost.class, PetView.RegistrationPut.class})
-    private UUID user;
+    private UUID userId;
 
 
 

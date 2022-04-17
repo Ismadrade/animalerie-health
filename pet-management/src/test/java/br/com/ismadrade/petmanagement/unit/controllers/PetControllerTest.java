@@ -11,7 +11,6 @@ import br.com.ismadrade.petmanagement.services.PetService;
 import br.com.ismadrade.petmanagement.services.TypeService;
 import br.com.ismadrade.petmanagement.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -156,8 +155,8 @@ public class PetControllerTest {
                 .birthday(LocalDate.of(2021, 9, 9))
                 .rga("12345698")
                 .gender(PetGender.FEMALE)
-                .type(UUID.fromString("ede14557-e644-4af1-944e-d2a04f67b687"))
-                .user(UUID.fromString("234dcce4-4944-44da-bc8f-6323c7c3495f"))
+                .typeId(UUID.fromString("ede14557-e644-4af1-944e-d2a04f67b687"))
+                .userId(UUID.fromString("234dcce4-4944-44da-bc8f-6323c7c3495f"))
                 .build();
     }
 

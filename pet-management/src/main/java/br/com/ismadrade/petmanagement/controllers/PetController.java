@@ -50,15 +50,15 @@ public class PetController {
             throw new CustomException(HttpStatus.CONFLICT, "Pet já cadastrado para o RGA informado!");
         }
 
-        Optional<UserModel> optionalUserModel = userService.findById(petDto.getUser());
+        Optional<UserModel> optionalUserModel = userService.findById(petDto.getUserId());
         if(optionalUserModel.isEmpty()){
-            log.warn("Usuário não encontrado para este pet. user: {} ", petDto.getUser());
+            log.warn("Usuário não encontrado para este pet. user: {} ", petDto.getUserId());
             throw new CustomException(HttpStatus.NOT_FOUND, "Usuário não encontrado para este pet!");
         }
 
-        Optional<TypeModel> optionalTypeModel = typeService.findById(petDto.getType());
+        Optional<TypeModel> optionalTypeModel = typeService.findById(petDto.getTypeId());
         if(optionalTypeModel.isEmpty()){
-            log.warn("Tipo não encontrado para este pet. tipo: {} ", petDto.getType());
+            log.warn("Tipo não encontrado para este pet. tipo: {} ", petDto.getTypeId());
             throw new CustomException(HttpStatus.NOT_FOUND, "Tipo não encontrado para este pet!");
         }
 
@@ -101,15 +101,15 @@ public class PetController {
         if(optionalPetModel.isEmpty())
             throw new CustomException(HttpStatus.NOT_FOUND, "Pet não encontrado para o id informado");
 
-        Optional<UserModel> optionalUserModel = userService.findById(dto.getUser());
+        Optional<UserModel> optionalUserModel = userService.findById(dto.getUserId());
         if(optionalUserModel.isEmpty()){
-            log.warn("Usuário não encontrado para este pet. user: {} ", dto.getUser());
+            log.warn("Usuário não encontrado para este pet. user: {} ", dto.getUserId());
             throw new CustomException(HttpStatus.NOT_FOUND, "Usuário não encontrado para este pet!");
         }
 
-        Optional<TypeModel> optionalTypeModel = typeService.findById(dto.getType());
+        Optional<TypeModel> optionalTypeModel = typeService.findById(dto.getTypeId());
         if(optionalTypeModel.isEmpty()){
-            log.warn("Tipo não encontrado para este pet. tipo: {} ", dto.getType());
+            log.warn("Tipo não encontrado para este pet. tipo: {} ", dto.getTypeId());
             throw new CustomException(HttpStatus.NOT_FOUND, "Tipo não encontrado para este pet!");
         }
 
