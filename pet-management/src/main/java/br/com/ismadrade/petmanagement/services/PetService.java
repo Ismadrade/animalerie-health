@@ -9,6 +9,6 @@ public interface PetService {
 
     PetModel savePet(PetModel petModel);
     Boolean existRga(String rga);
-
+    PetModel updatePet(PetModel petModel);
     Optional<PetModel> findById(UUID petId);
 }

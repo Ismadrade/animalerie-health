@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .httpStatus(ex.getHttpStatus())
                 .message(ex.getErrorMessage()).build();
-
+        log.warn(ex.getErrorMessage());
         return ResponseEntity.status(ex.getHttpStatus())
                 .body(error);
     }

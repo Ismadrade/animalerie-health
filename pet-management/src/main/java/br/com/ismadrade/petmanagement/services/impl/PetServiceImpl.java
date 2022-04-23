@@ -6,6 +6,7 @@ import br.com.ismadrade.petmanagement.services.PetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,12 +23,20 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public PetModel savePet(PetModel petModel) {
+        petModel.setCreationDate(LocalDateTime.now());
+        petModel.setLastUpdateDate(LocalDateTime.now());
         return petRepository.save(petModel);
     }
 
     @Override
     public Boolean existRga(String rga) {
         return petRepository.existsByRga(rga);
+    }
+
+    @Override
+    public PetModel updatePet(PetModel petModel) {
+        petModel.setLastUpdateDate(LocalDateTime.now());
+        return petRepository.save(petModel);
     }
 
     @Override

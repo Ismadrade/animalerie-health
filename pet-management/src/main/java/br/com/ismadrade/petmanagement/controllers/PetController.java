@@ -2,6 +2,7 @@ package br.com.ismadrade.petmanagement.controllers;
 
 import br.com.ismadrade.petmanagement.dtos.PetDto;
 import br.com.ismadrade.petmanagement.exceptions.CustomException;
+import br.com.ismadrade.petmanagement.mappers.Mapper;
 import br.com.ismadrade.petmanagement.models.PetModel;
 import br.com.ismadrade.petmanagement.models.TypeModel;
 import br.com.ismadrade.petmanagement.models.UserModel;
@@ -10,9 +11,9 @@ import br.com.ismadrade.petmanagement.services.TypeService;
 import br.com.ismadrade.petmanagement.services.UserService;
 import br.com.ismadrade.petmanagement.views.PetView;
 import com.fasterxml.jackson.annotation.JsonView;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -23,53 +24,28 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Log4j2
+@RequiredArgsConstructor
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/pets")
 public class PetController {
 
     private final PetService petService;
-    private final UserService userService;
-    private final TypeService typeService;
+    private final Mapper<PetDto, PetModel> mapper;
 
-    @Autowired
-    public PetController(PetService petService, UserService userService, TypeService typeService) {
-        this.petService = petService;
-        this.userService = userService;
-        this.typeService = typeService;
-    }
 
     @PostMapping
     public ResponseEntity<?> petRegister(@RequestBody
                                          @JsonView(PetView.RegistrationPost.class)
                                          @Validated(PetView.RegistrationPost.class) PetDto petDto){
+
         log.debug("POST petRegister petDto received {}", petDto.toString());
 
-        if(petService.existRga(petDto.getRga())){
-            log.warn("Pet já cadastrado para o RGA informado {} ", petDto.getRga());
+        if(petService.existRga(petDto.getRga()))
             throw new CustomException(HttpStatus.CONFLICT, "Pet já cadastrado para o RGA informado!");
-        }
 
-        Optional<UserModel> optionalUserModel = userService.findById(petDto.getUserId());
-        if(optionalUserModel.isEmpty()){
-            log.warn("Usuário não encontrado para este pet. user: {} ", petDto.getUserId());
-            throw new CustomException(HttpStatus.NOT_FOUND, "Usuário não encontrado para este pet!");
-        }
-
-        Optional<TypeModel> optionalTypeModel = typeService.findById(petDto.getTypeId());
-        if(optionalTypeModel.isEmpty()){
-            log.warn("Tipo não encontrado para este pet. tipo: {} ", petDto.getTypeId());
-            throw new CustomException(HttpStatus.NOT_FOUND, "Tipo não encontrado para este pet!");
-        }
-
-
-        var petModel = new PetModel();
-        BeanUtils.copyProperties(petDto, petModel);
-        petModel.setCreationDate(LocalDateTime.now());
-        petModel.setLastUpdateDate(LocalDateTime.now());
-        petModel.setUser(optionalUserModel.get());
-        petModel.setType(optionalTypeModel.get());
-        petService.savePet(petModel);
+        PetModel petModel = mapper.toEntity(petDto);
+        this.petService.savePet(petModel);
 
         log.debug("POST petRegister petId {}", petModel.getPetId());
         log.info("Pet has been saved! petId {}", petModel.getPetId());
@@ -79,14 +55,12 @@ public class PetController {
 
     @GetMapping("/{petId}")
     public ResponseEntity<PetModel> findById(@PathVariable(value = "petId") UUID petId){
+
         log.debug("GET findById received idPet {}", petId);
-        Optional<PetModel> optionalPetModel = petService.findById(petId);
-
-        if(optionalPetModel.isEmpty())
-            throw new CustomException(HttpStatus.NOT_FOUND, "Pet não encontrado para o id informado");
-
+        PetModel petModel = petService.findById(petId).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Pet não encontrado para o id informado"));
         log.info("GET findById founded!");
-        return ResponseEntity.status(HttpStatus.OK).body(optionalPetModel.get());
+
+        return ResponseEntity.status(HttpStatus.OK).body(petModel);
 
     }
 
@@ -94,35 +68,21 @@ public class PetController {
     public ResponseEntity<PetModel> editPet(@PathVariable(value = "petId") UUID petId,
                                             @RequestBody
                                             @JsonView(PetView.RegistrationPost.class)
-                                            @Validated(PetView.RegistrationPost.class) PetDto dto){
-        log.debug("PUT editPet petDto received {}", dto.toString());
-        Optional<PetModel> optionalPetModel = petService.findById(petId);
+                                            @Validated(PetView.RegistrationPost.class) PetDto petDto){
+        log.debug("PUT editPet petDto received {}", petDto.toString());
 
-        if(optionalPetModel.isEmpty())
-            throw new CustomException(HttpStatus.NOT_FOUND, "Pet não encontrado para o id informado");
+        var lastPet = petService.findById(petId).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Pet não encontrado para o id informado"));
+        var petModel = mapper.toEntity(petDto);
+        petModel.setPetId(lastPet.getPetId());
+        petModel.setCreationDate(lastPet.getCreationDate());
 
-        Optional<UserModel> optionalUserModel = userService.findById(dto.getUserId());
-        if(optionalUserModel.isEmpty()){
-            log.warn("Usuário não encontrado para este pet. user: {} ", dto.getUserId());
-            throw new CustomException(HttpStatus.NOT_FOUND, "Usuário não encontrado para este pet!");
-        }
-
-        Optional<TypeModel> optionalTypeModel = typeService.findById(dto.getTypeId());
-        if(optionalTypeModel.isEmpty()){
-            log.warn("Tipo não encontrado para este pet. tipo: {} ", dto.getTypeId());
-            throw new CustomException(HttpStatus.NOT_FOUND, "Tipo não encontrado para este pet!");
-        }
-
-        var petModel = optionalPetModel.get();
-        BeanUtils.copyProperties(dto, petModel);
-        petModel.setPetId(petId);
-        petModel.setUser(optionalUserModel.get());
-        petModel.setType(optionalTypeModel.get());
+        BeanUtils.copyProperties(petModel,lastPet);
         petModel.setLastUpdateDate(LocalDateTime.now());
-        petService.savePet(petModel);
+        petService.updatePet(petModel);
 
         log.debug("PUT editPet petId {}", petModel.getPetId());
         log.info("Pet has been edited! petId {}", petModel.getPetId());
+
         return ResponseEntity.status(HttpStatus.OK).body(petModel);
 
     }
