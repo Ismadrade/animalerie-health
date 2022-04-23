@@ -57,6 +57,8 @@ public class PetControllerTest {
     @BeforeEach
     private void setup(){
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
+        BDDMockito.given(userService.findById(Mockito.any(UUID.class))).willReturn(buildUser());
+        BDDMockito.given(typeService.findById(Mockito.any(UUID.class))).willReturn(buildType());
     }
 
     @Test
@@ -65,8 +67,6 @@ public class PetControllerTest {
         PetDto petDto = buildPetDto();
         PetModel petSaved = buildPet(true);
         BDDMockito.given(petService.savePet(Mockito.any(PetModel.class))).willReturn(petSaved);
-        BDDMockito.given(userService.findById(Mockito.any(UUID.class))).willReturn(Optional.of(buildUser()));
-        BDDMockito.given(typeService.findById(Mockito.any(UUID.class))).willReturn(Optional.of(buildType()));
         String json = new ObjectMapper().writeValueAsString(petDto);
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
@@ -130,8 +130,6 @@ public class PetControllerTest {
         petSaved.setGender(petDto.getGender());
 
         BDDMockito.given(petService.findById(Mockito.any(UUID.class))).willReturn(Optional.of(petSaved));
-        BDDMockito.given(userService.findById(Mockito.any(UUID.class))).willReturn(Optional.of(buildUser()));
-        BDDMockito.given(typeService.findById(Mockito.any(UUID.class))).willReturn(Optional.of(buildType()));
         BDDMockito.given(petService.savePet(Mockito.any(PetModel.class))).willReturn(petSaved);
         String json = new ObjectMapper().writeValueAsString(petDto);
 

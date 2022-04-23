@@ -7,5 +7,5 @@ import java.util.UUID;
 
 public interface TypeService {
 
-    Optional<TypeModel> findById(UUID typeId);
+    TypeModel findById(UUID typeId);
 }
