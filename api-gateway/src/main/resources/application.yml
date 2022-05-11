@@ -1,0 +1,25 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: ah-api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: authuser-service
+          uri: lb://AH-AUTHUSER-SERVICE
+          predicates:
+            - Path=/ah-authuser/**
+        - id: pet-management-service
+          uri: lb://AH-PET-MANAGEMENT-SERVICE
+          predicates:
+            - Path=/ah-pet/**
+
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: 'http://localhost:8761/eureka'
+  instance:
+    hostname: localhost
