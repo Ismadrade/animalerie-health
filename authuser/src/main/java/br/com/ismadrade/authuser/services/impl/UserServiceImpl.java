@@ -77,4 +77,9 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(userModel);
         userEventPublisher.publishUserEvent(userModel.convertToUserEventDto(), ActionType.DELETE);
     }
+
+    @Override
+    public Optional<UserModel> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
 }

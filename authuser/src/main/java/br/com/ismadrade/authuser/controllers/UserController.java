@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +44,14 @@ public class UserController {
         Optional<UserModel> userModelOptional = userService.findById(userId);
         if(!userModelOptional.isPresent())
             throw new CustomException(HttpStatus.NOT_FOUND, "Usuario não encontrado");
+        return ResponseEntity.status(HttpStatus.OK).body(userModelOptional);
+    }
+
+    @GetMapping("/username/{username}")
+    public ResponseEntity<Object> getOneUserByUsername(@PathVariable(value = "username") String username){
+        Optional<UserModel> userModelOptional = userService.findByUsername(username);
+        if(!userModelOptional.isPresent())
+            throw new CustomException(HttpStatus.NOT_FOUND, "Usuario não encontrado para este username");
         return ResponseEntity.status(HttpStatus.OK).body(userModelOptional);
     }
 

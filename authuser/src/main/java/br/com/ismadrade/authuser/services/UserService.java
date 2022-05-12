@@ -27,4 +27,6 @@ public interface UserService {
     UserModel updatePassword(UserModel userModel);
 
     void delete(UserModel userModel);
+
+    Optional<UserModel> findByUsername(String username);
 }
