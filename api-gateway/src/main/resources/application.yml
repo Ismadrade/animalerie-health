@@ -15,6 +15,14 @@ spring:
           uri: lb://AH-PET-MANAGEMENT-SERVICE
           predicates:
             - Path=/ah-pet/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedHeaders: "*"
+            allowedMethods:
+              - GET
+              - POST
 
 ah:
   serviceRegistry:
