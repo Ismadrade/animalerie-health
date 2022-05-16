@@ -1,6 +1,12 @@
 server:
   port: 8761
 
+ah:
+  serviceRegistry:
+    username: serviceregistry
+    password: 'ah123sr'
+
+
 spring:
   application:
     name: ah-service-registry
