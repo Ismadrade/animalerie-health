@@ -40,9 +40,16 @@ animalerie-health:
         name: ah.userevent.ms.pet
       deadLetter:
         name: deadLetter.queue
+ah:
+  serviceRegistry:
+    username: serviceregistry
+    password: 'ah123sr'
+  auth:
+    jwtSecret: PdSgVkYp3s6v9y$B&E)H+MbQeThWmZq4t7w!z%C*F-JaNcRfUjXn2r5u8x/A?D(G
+    jwtExpirationMs: 14400000
 eureka:
   client:
     serviceUrl:
-      defaultZone: 'http://localhost:8761/eureka'
+      defaultZone: 'http://${ah.serviceRegistry.username}:${ah.serviceRegistry.password}@localhost:8761/eureka'
   instance:
     hostname: localhost

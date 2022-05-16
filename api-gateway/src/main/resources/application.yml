@@ -16,10 +16,14 @@ spring:
           predicates:
             - Path=/ah-pet/**
 
+ah:
+  serviceRegistry:
+    username: serviceregistry
+    password: 'ah123sr'
 
 eureka:
   client:
     serviceUrl:
-      defaultZone: 'http://localhost:8761/eureka'
+      defaultZone: 'http://${ah.serviceRegistry.username}:${ah.serviceRegistry.password}@localhost:8761/eureka'
   instance:
     hostname: localhost
