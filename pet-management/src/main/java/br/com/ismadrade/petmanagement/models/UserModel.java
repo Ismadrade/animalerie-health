@@ -23,7 +23,6 @@ import java.util.UUID;
 public class UserModel extends RepresentationModel<UserModel> implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(columnDefinition = "uuid")
     private UUID userId;
 
