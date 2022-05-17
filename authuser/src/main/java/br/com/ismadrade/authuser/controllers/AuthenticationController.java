@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Optional;
 
 @Log4j2
 @RestController
@@ -99,5 +100,20 @@ public class AuthenticationController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtProvider.generateJwt(authentication);
         return ResponseEntity.ok(new JwtDto(jwt));
+    }
+
+    @GetMapping("/valid/username")
+    public ResponseEntity<Boolean> validExistingUserByUsername(@RequestParam(value = "username") String username){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.existsByUsername(username));
+    }
+
+    @GetMapping("/valid/cpf")
+    public ResponseEntity<Boolean> validExistingUserByCpf(@RequestParam(value = "cpf") String cpf){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.existsByCpf(cpf));
+    }
+
+    @GetMapping("/valid/email")
+    public ResponseEntity<Boolean> validExistingUserByEmail(@RequestParam(value = "email") String email){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.existsByEmail(email));
     }
 }

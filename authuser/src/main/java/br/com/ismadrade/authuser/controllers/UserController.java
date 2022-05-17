@@ -46,14 +46,6 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userModelOptional);
     }
 
-    @GetMapping("/username/{username}")
-    public ResponseEntity<Object> getOneUserByUsername(@PathVariable(value = "username") String username){
-        Optional<UserModel> userModelOptional = userService.findByUsername(username);
-        if(!userModelOptional.isPresent())
-            throw new CustomException(HttpStatus.NOT_FOUND, "Usuario não encontrado para este username");
-        return ResponseEntity.status(HttpStatus.OK).body(userModelOptional);
-    }
-
     @GetMapping
     public ResponseEntity<Page<UserModel>> getAllUsers(SpecificationTemplate.UserSpec spec,
                                                        @PageableDefault(page = 0, size = 10, sort = "userId", direction = Sort.Direction.ASC) Pageable pageable){
