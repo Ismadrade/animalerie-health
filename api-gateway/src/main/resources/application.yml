@@ -15,14 +15,15 @@ spring:
           uri: lb://AH-PET-MANAGEMENT-SERVICE
           predicates:
             - Path=/ah-pet/**
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
       globalcors:
         corsConfigurations:
           '[/**]':
-            allowedOrigins: "*"
-            allowedHeaders: "*"
-            allowedMethods:
-              - GET
-              - POST
+            allowed-origin-patterns: "*"
+            allowed-methods: "*"
+            allowed-headers: "*"
+            allow-credentials: true
 
 ah:
   serviceRegistry:
