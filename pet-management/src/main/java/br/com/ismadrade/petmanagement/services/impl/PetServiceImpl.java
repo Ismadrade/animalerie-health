@@ -1,9 +1,13 @@
 package br.com.ismadrade.petmanagement.services.impl;
 
 import br.com.ismadrade.petmanagement.models.PetModel;
+import br.com.ismadrade.petmanagement.models.UserModel;
 import br.com.ismadrade.petmanagement.repositories.PetRepository;
 import br.com.ismadrade.petmanagement.services.PetService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -42,5 +46,10 @@ public class PetServiceImpl implements PetService {
     @Override
     public Optional<PetModel> findById(UUID petId) {
         return petRepository.findById(petId);
+    }
+
+    @Override
+    public Page<PetModel> findAll(Specification<PetModel> spec, Pageable pageable) {
+        return petRepository.findAll(spec, pageable);
     }
 }
