@@ -32,7 +32,7 @@ public class JwtProvider {
 
         return Jwts.builder()
                 .setSubject((userPrincipal.getUserId().toString()))
-                .claim("name", userPrincipal.getFullName())
+                .claim("fullName", userPrincipal.getFullName())
                 .claim("username", userPrincipal.getUsername())
                 .claim("email", userPrincipal.getEmail())
                 .claim("roles", roles)

@@ -1,5 +1,6 @@
 package br.com.ismadrade.petmanagement.controllers;
 
+import br.com.ismadrade.petmanagement.configs.security.AuthenticationCurrentUserService;
 import br.com.ismadrade.petmanagement.dtos.PetDto;
 import br.com.ismadrade.petmanagement.exceptions.CustomException;
 import br.com.ismadrade.petmanagement.mappers.Mapper;
@@ -31,6 +32,7 @@ import java.util.UUID;
 public class PetController {
 
     private final PetService petService;
+    private final AuthenticationCurrentUserService authenticationCurrentUserService;
     private final Mapper<PetDto, PetModel> mapper;
 
 
@@ -45,6 +47,7 @@ public class PetController {
             throw new CustomException(HttpStatus.CONFLICT, "Pet já cadastrado para o RGA informado!");
 
         PetModel petModel = mapper.toEntity(petDto);
+        petModel.setUser(authenticationCurrentUserService.getCurrentUser());
         this.petService.savePet(petModel);
 
         log.debug("POST petRegister petId {}", petModel.getPetId());

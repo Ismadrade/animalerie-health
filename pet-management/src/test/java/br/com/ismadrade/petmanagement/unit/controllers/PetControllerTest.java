@@ -154,7 +154,6 @@ public class PetControllerTest {
                 .rga("12345698")
                 .gender(PetGender.FEMALE)
                 .typeId(UUID.fromString("ede14557-e644-4af1-944e-d2a04f67b687"))
-                .userId(UUID.fromString("234dcce4-4944-44da-bc8f-6323c7c3495f"))
                 .build();
     }
 

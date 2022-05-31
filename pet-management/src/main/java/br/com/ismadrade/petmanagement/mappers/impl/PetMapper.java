@@ -1,5 +1,6 @@
 package br.com.ismadrade.petmanagement.mappers.impl;
 
+import br.com.ismadrade.petmanagement.configs.security.AuthenticationCurrentUserService;
 import br.com.ismadrade.petmanagement.dtos.PetDto;
 import br.com.ismadrade.petmanagement.exceptions.CustomException;
 import br.com.ismadrade.petmanagement.mappers.Mapper;
@@ -25,12 +26,10 @@ import java.util.UUID;
 public class PetMapper implements Mapper<PetDto, PetModel> {
 
     private final ModelMapper mapper;
-    private final UserService userService;
     private final TypeService typeService;
 
     public PetModel toEntity(PetDto dto) {
         PetModel petModel = mapper.map(dto, PetModel.class);
-        petModel.setUser(userService.findById(dto.getUserId()));
         petModel.setType(typeService.findById(dto.getTypeId()));
         return petModel;
     }

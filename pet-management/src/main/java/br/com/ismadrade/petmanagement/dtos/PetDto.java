@@ -43,10 +43,6 @@ public class PetDto {
     @JsonView({PetView.RegistrationPost.class, PetView.RegistrationPut.class})
     private UUID typeId;
 
-    /**TODO:  Ajustar user para o contexto do Spring Security quando implementado.  */
-    @JsonView({PetView.RegistrationPost.class, PetView.RegistrationPut.class})
-    private UUID userId;
-
 
 
 }
