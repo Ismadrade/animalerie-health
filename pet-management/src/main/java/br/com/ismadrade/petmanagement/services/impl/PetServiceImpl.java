@@ -52,4 +52,9 @@ public class PetServiceImpl implements PetService {
     public Page<PetModel> findAll(Specification<PetModel> spec, Pageable pageable) {
         return petRepository.findAll(spec, pageable);
     }
+
+    @Override
+    public void delete(PetModel petModel) {
+        petRepository.delete(petModel);
+    }
 }

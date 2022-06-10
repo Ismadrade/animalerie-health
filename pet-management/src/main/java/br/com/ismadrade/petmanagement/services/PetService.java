@@ -18,4 +18,6 @@ public interface PetService {
     Optional<PetModel> findById(UUID petId);
 
     Page<PetModel> findAll(Specification<PetModel> spec, Pageable pageable);
+
+    void delete(PetModel petModel);
 }

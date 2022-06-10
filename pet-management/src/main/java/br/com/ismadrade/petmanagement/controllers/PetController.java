@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Log4j2
@@ -105,6 +107,17 @@ public class PetController {
 
         return ResponseEntity.status(HttpStatus.OK).body(petModel);
 
+    }
+
+    @DeleteMapping("/{petId}")
+    public ResponseEntity<Object> deletePet(@PathVariable(value = "petId") UUID petId){
+        Optional<PetModel> petModelOptional = petService.findById(petId);
+        if(petModelOptional.isEmpty())
+            throw new CustomException(HttpStatus.NOT_FOUND, "Pet não encontrado");
+        petService.delete(petModelOptional.get());
+        log.debug("DELETE deletePet userId deleted {}", petId);
+        log.info("Pet deleted successfully userId {}",  petId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 
